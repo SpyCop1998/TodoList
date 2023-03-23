@@ -3,12 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/providers/splashProvider.dart';
-import 'package:todo_app/providers/taskInfoProvider.dart';
 import 'package:todo_app/providers/todoProvider.dart';
 import 'package:todo_app/screens/homeScreen.dart';
+
 // import 'package:todo_app/screens/loginScreen.dart';
 import 'package:todo_app/screens/splashScreen.dart';
-import 'package:todo_app/widgets/Buttons.dart';
+import 'package:todo_app/widgets/buttons.dart';
 import 'providers/authProvider.dart';
 // import './testView/homeScreen.dart';
 
@@ -42,21 +42,33 @@ class MyApp extends StatelessWidget {
       body: Center(
           child: email == null
               ? Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage(
+                          "assets/peakpx.jpg",
+                        ),
+                        fit: BoxFit.cover,
+                        opacity: 1),
+                  ),
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height,
                   child: Column(
                     // crossAxisAlignment: ,
                     children: [
+                      // SizedBox(height: MediaQuery.of(context).size.width/4,),
+                      // Text("Welcome",style: TextStyle(color: Colors.white),textAlign: TextAlign.center,),
                       Spacer(),
                       Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: RoundedButton(buttonText: 'Continue with Google', onPressed: () => {auth.signInWithGoogle()},),
+                        padding: const EdgeInsets.all(30),
+                        child: RoundedButton(
+                          buttonText: 'Continue with Google',
+                          onPressed: () => {auth.signInWithGoogle()},
+                        ),
                       )
                     ],
                   ),
                 )
-              : HomeSceen()
-          ),
+              : HomeSceen()),
     );
   }
 }

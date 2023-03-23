@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/foundation.dart';
-import 'package:todo_app/providers/taskInfoProvider.dart';
-import '../models/Todo.dart';
+import '../models/todoModel.dart';
 
 class TodoProvider extends ChangeNotifier {
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -11,7 +10,6 @@ class TodoProvider extends ChangeNotifier {
   List<TodoModel> _todoList = [];
 
   List<TodoModel> get todoList => _todoList;
-
 
   String? _completed;
 
@@ -42,9 +40,9 @@ class TodoProvider extends ChangeNotifier {
     List<String> retv = <String>[];
     retv.add(res.toString());
     retv.add(res1.toString());
-    if(res1==0){
+    if (res1 == 0) {
       retv.add((100).toString());
-    }else {
+    } else {
       retv.add(((res * 100) / res1).toString());
     }
     return retv;
@@ -59,13 +57,13 @@ class TodoProvider extends ChangeNotifier {
       } else {
         res1++;
       }
-    }if(list.isEmpty){
+    }
+    if (list.isEmpty) {
       return 1;
-    }else {
-      return (res/list.length);
+    } else {
+      return (res / list.length);
     }
   }
-
 
   Future<void> getTodos(String userId) async {
     if (userId != null) {
@@ -78,6 +76,7 @@ class TodoProvider extends ChangeNotifier {
               (e) => TodoModel.fromJson(e.data()),
             )
             .toList();
+
         _todoList.sort((a, b) {
           if (a.dateAndTime != null && b.dateAndTime != null) {
             return b.dateAndTime!.compareTo(a.dateAndTime!);
@@ -85,17 +84,31 @@ class TodoProvider extends ChangeNotifier {
             return b.dateAndTime!.compareTo(a.dateAndTime ?? Timestamp.now());
           }
         });
-        _completed=getNos(_todoList)[0];
-        _notCompleted=getNos(_todoList)[1];
-        _perComp=getPercentageComplete(_todoList);
-        _stringPer=(getPercentageComplete(_todoList)*100).toString();
+
+        List<TodoModel> finalList = [];
+        for (int i = 0; i < _todoList.length; i++) {
+          if (_todoList[i].isFinished == false) {
+            finalList.add(_todoList[i]);
+          }
+        }
+        for (int i = 0; i < _todoList.length; i++) {
+          if (_todoList[i].isFinished == true) {
+            finalList.add(_todoList[i]);
+          }
+        }
+        _todoList = finalList;
+
+        _completed = getNos(_todoList)[0];
+        _notCompleted = getNos(_todoList)[1];
+        _perComp = getPercentageComplete(_todoList);
+        _stringPer = (getPercentageComplete(_todoList) * 100).toString();
       } catch (error) {
         print(error);
         _todoList = [];
-        _completed="";
-        _notCompleted="";
-        _perComp=0.0;
-        _stringPer="";
+        _completed = "";
+        _notCompleted = "";
+        _perComp = 0.0;
+        _stringPer = "";
       }
       notifyListeners();
     }
@@ -109,18 +122,9 @@ class TodoProvider extends ChangeNotifier {
         var todos = userRef.doc(userId).collection("todos").doc(obj["id"]);
         await todos.set(obj);
         await getTodos(userId);
-        // uiGlobals.showSnackBar(
-        //   content: AppLocalizations.of(context)!.addTodoSuccess,
-        //   context: context,
-        // );
-        // Navigator.pop(context);
         return 200;
       } catch (e) {
-        print("hey");
-        // uiGlobals.showSnackBar(
-        //   content: e.toString(),
-        //   context: context,
-        // );
+        print("error");
         return 400;
       }
     }
@@ -131,24 +135,14 @@ class TodoProvider extends ChangeNotifier {
       {required String todoId,
       required Map<String, dynamic> obj,
       required String userId}) async {
-    // String? userId = await Token.readToken("user");
     if (userId != null) {
       try {
         CollectionReference userRef = firestore.collection("User");
         var todo = userRef.doc(userId).collection("todos").doc(todoId);
         await todo.update(obj);
         await getTodos(userId);
-        // uiGlobals.showSnackBar(
-        //   content: AppLocalizations.of(context)!.updateTodoSuccess,
-        //   context: context,
-        // );
-        // Navigator.pop(context);
         return 200;
       } catch (e) {
-        // uiGlobals.showSnackBar(
-        //   content: e.toString(),
-        //   context: context,
-        // );
         return 400;
       }
     }
@@ -157,7 +151,6 @@ class TodoProvider extends ChangeNotifier {
 
   Future<int> deleteTodo(
       {required String todoId, required String userId}) async {
-    // String? userId = await Token.readToken("user");
     if (userId != null) {
       try {
         CollectionReference userRef = firestore.collection("User");
@@ -165,17 +158,8 @@ class TodoProvider extends ChangeNotifier {
         await todo.delete();
         await getTodos(userId);
         return 200;
-        // Navigator.pop(context);
-        // uiGlobals.showSnackBar(
-        //   content: AppLocalizations.of(context)!.deleteTodoSuccess,
-        //   context: context,
-        // );
       } catch (e) {
         return 400;
-        // uiGlobals.showSnackBar(
-        //   content: e.toString(),
-        //   context: context,
-        // );
       }
     }
     return 500;

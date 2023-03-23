@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_app/main.dart';
 import 'package:todo_app/providers/splashProvider.dart';
-
 import 'homeScreen.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -37,8 +36,9 @@ class SplashScreen extends StatelessWidget {
         shrinkWrap: shrinkWrap,
         children: [
           _icon(context),
-          SizedBox(height: 10,),
-          // context.emptySizedHeightBox1x,
+          SizedBox(
+            height: 10,
+          ),
           _title(context)
         ],
       ),

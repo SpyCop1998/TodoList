@@ -75,11 +75,8 @@ class AuthProvider with ChangeNotifier {
           "email": user!.email,
         },
       );
-      // Token.saveToken(token: user!.uid, key: "user");
       notifyListeners();
     }
-    // await Firebase.initializeApp();
-
   }
 
   Future<void> signOut() async {
@@ -95,8 +92,6 @@ class AuthProvider with ChangeNotifier {
     sharedPreferences.remove('googleSignInEmail');
     sharedPreferences.remove('secretToken');
     sharedPreferences.remove('userName');
-
-    // Token.deleteAll();
     notifyListeners();
   }
 }
