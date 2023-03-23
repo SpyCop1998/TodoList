@@ -1,10 +1,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.todo.app.todo_app">
    <application
-        android:label="todo_app"
+        android:label="ToDoApp"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
+            android:screenOrientation="portrait"
             android:name=".MainActivity"
             android:exported="true"
             android:launchMode="singleTop"
